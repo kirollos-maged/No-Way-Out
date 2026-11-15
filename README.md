@@ -1,195 +1,112 @@
+# No Way Out
 
-# No Way Out — Dark Cartoon Survival Edition
+**No Way Out** is a grid-based maze survival game built with Python and Pygame. Reach the exit while zombies pursue you using different pathfinding algorithms. The game is implemented in one Python file and draws its graphics and generates its sound effects at runtime; it does not need external game assets.
 
-A tactical maze-escape game built with Pygame where you outrun zombies powered by real pathfinding algorithms. No external assets required — everything is generated at runtime.
+## Screenshots
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![Pygame](https://img.shields.io/badge/Pygame-2.0%2B-green)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+| Main menu | Campaign gameplay | Level editor |
+| --- | --- | --- |
+| ![No Way Out main menu](screenshots/menu.png) | ![Level 11 gameplay with A* zombies](screenshots/gameplay.png) | ![Level editor](screenshots/editor.png) |
 
----
+## Features
 
-## 🎮 Overview
+- **15 campaign levels.** Each run uses a randomly generated maze with a configured number of walls, special tiles, zombies, and items. Completing levels unlocks the next level.
+- **Three zombie pathfinding strategies.**
+  - **Greedy:** follows the Manhattan-distance heuristic; it does not guarantee a shortest route.
+  - **BFS:** finds a shortest route by number of steps and does not account for different tile costs.
+  - **A\*:** searches using movement costs for each tile type.
+- **Five cosmetic survivor skins.** Zex, Ninja, 0xBP7, Romman, and Kade do not change gameplay stats.
+- **Changing terrain.** Walls block movement; Mud slows the player, Ice speeds the player up, and doors periodically toggle between passable and blocked.
+- **Three power-ups.** Speed Boost doubles player speed for 5 seconds, Freeze Trap stops zombies for 4 seconds, and Decoy attracts zombies for 5 seconds.
+- **Custom level editor.** Paint terrain, place the start, exit, and up to three zombies, validate reachability, and play-test the maze.
+- **Generated audio.** Sound effects are synthesized at runtime. The game can also run without an audio device.
 
-**No Way Out** is a grid-based survival game where you navigate through increasingly complex mazes while being hunted by zombies. Each zombie family uses a different pathfinding strategy, creating a genuine AI difficulty curve that teaches search algorithms through gameplay.
+The game window is 960 x 720 pixels and the maze grid is 16 columns by 12 rows.
 
-- **15 handcrafted campaign levels** with progressive difficulty
-- **3 enemy AI types**: Greedy, BFS, and A* pathfinding
-- **5 cosmetic survivor skins** with unique visual styles
-- **Built-in Level Editor** to create and play-test custom mazes
-- **Runtime-generated audio** — no external sound files needed
+## Requirements
 
----
+- Python 3
+- Pygame
 
-## ✨ Features
+There is no dependency or packaging manifest in this repository; Pygame is the only third-party Python package imported by the game.
 
-### 🧠 Algorithmic Enemy AI
-| Type | Color | Strategy | Difficulty |
-|------|-------|----------|------------|
-| **Greedy** | 🟡 Yellow | Direct chase using Manhattan distance | Easy |
-| **BFS** | 🟢 Green | Shortest unweighted path | Medium |
-| **A*** | 🔵 Blue | Optimal weighted pathfinding | Hard |
+## Install and run
 
-### 🗺️ Dynamic Tile System
-- **Path** — Standard walkable tile
-- **Mud** — Slows your movement by 2×
-- **Ice** — Speeds up your movement by 0.5×
-- **Door** — Randomly toggles open/closed, forcing path recalculation
-- **Wall** — Blocks all movement
-
-### 🎒 Power-ups
-| Key | Item | Effect | Duration |
-|-----|------|--------|----------|
-| `1` | **Speed Boost** | 2× movement speed | 5 seconds |
-| `2` | **Freeze Trap** | Zombies stop moving | 4 seconds |
-| `3` | **Decoy** | Diverts zombie targeting | 5 seconds |
-
-### 🎨 Character Skins
-Five cosmetic-only survivors (no gameplay stat changes):
-- **Zex** — Neon Runner (female)
-- **Ninja** — Silent Shadow (male)
-- **0xBP7** — Cyber Operator (male)
-- **Romman** — Street Defender (male)
-- **Kade** — Maze Scout (male)
-
----
-
-## 🚀 Installation
-
-### Requirements
-- Python 3.8 or higher
-- Pygame 2.0 or higher
-
-### Setup
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/no-way-out.git
-cd no-way-out
-
-# Install dependencies
-pip install pygame
-
-# Run the game
+git clone https://github.com/kirollos-maged/No-Way-Out.git
+cd No-Way-Out
+python -m pip install pygame
 python game_enhanced.py
 ```
 
-> **Note:** The game uses a runtime-generated sound system. If your system has no audio device, the game will run silently without errors.
+On Windows, if `python` is not the Python 3 launcher on your system, use `py -3` in its place:
 
----
+```powershell
+py -3 -m pip install pygame
+py -3 game_enhanced.py
+```
 
-## 🎯 Controls
+Run the game from the project directory. Campaign progress is stored in `progress.json` in the current working directory when a newly unlocked level is completed.
+
+## Controls
 
 | Input | Action |
-|-------|--------|
-| `WASD` / `Arrow Keys` | Move player |
+| --- | --- |
+| `W`, `A`, `S`, `D` or arrow keys | Move |
 | `1` | Use Speed Boost |
 | `2` | Use Freeze Trap |
 | `3` | Use Decoy |
-| `ESC` / `P` | Pause game |
-| `M` | Return to Main Menu (from pause) |
+| `Esc` or `P` | Pause or resume |
+| `M` (while paused) | Return to the main menu |
 
-### Level Editor Controls
-| Input | Action |
-|-------|--------|
-| `Left Click` | Paint tiles / place entities |
-| `Tool Buttons` | Select Wall, Path, Mud, Ice, Door, Start, Exit, or Zombie |
-| `Validate` | Check map reachability |
-| `Play Test` | Test your custom map |
+## Campaign progression
 
----
+Zombie movement intervals are measured in milliseconds. A shorter interval means zombies move more frequently.
 
-## 📊 Campaign Progression
+| Levels | Zombies | Algorithm | Move interval | Power-ups |
+| --- | ---: | --- | ---: | ---: |
+| 1-3 | 1 | Greedy | 600 ms | 3 |
+| 4-5 | 2 | Greedy | 600 ms | 3 |
+| 6-7 | 1 | BFS | 400 ms | 2 |
+| 8-10 | 2 | BFS | 400 ms | 2 |
+| 11-13 | 2 | A* | 250 ms | 2 |
+| 14-15 | 3 | A* | 250 ms | 1 |
 
-The 15-level campaign is divided into 5 difficulty tiers:
+The game starts with level 1 unlocked. Completing the currently highest unlocked level saves progress and unlocks the next level.
 
-| Levels | Zombies | AI Type | Speed | Items |
-|--------|---------|---------|-------|-------|
-| 1–3 | 1 | Greedy | 600ms | 3 |
-| 4–5 | 2 | Greedy | 600ms | 3 |
-| 6–7 | 1 | BFS | 400ms | 2 |
-| 8–10 | 2 | BFS | 400ms | 2 |
-| 11–13 | 2 | A* | 250ms | 2 |
-| 14–15 | 3 | A* | 250ms | 1 |
+## Tiles and pathfinding
 
-Progress is automatically saved to `progress.json`.
+The pathfinding costs used by A\* are:
 
----
+| Tile | A\* movement cost | Player movement |
+| --- | ---: | --- |
+| Path | 1 | Normal |
+| Mud | 3 | Takes twice as long to enter |
+| Ice | 0.5 | Takes half as long to enter |
+| Door | 1 while open | Blocks movement while closed |
+| Wall | Not traversable | Blocks movement |
 
-## 🛠️ Level Editor
+A door tile is selected at random and toggled every 800 ms. BFS chooses paths by step count, while A\* uses the costs above. The Greedy strategy uses Manhattan distance to choose its route and does not factor in tile costs.
 
-Build custom mazes with the built-in editor:
+## Level editor
 
-1. **Paint** tiles using the left toolbar
-2. **Place** the player start (`S`), exit (`E`), and up to 3 zombies (`Z`)
-3. **Select** zombie AI difficulty (Greedy / BFS / A*)
-4. **Validate** to ensure the exit and all zombies are reachable
-5. **Play Test** to challenge your own creation
+Select a tool from the left panel, then click a tile to paint terrain or place a start, exit, or zombie. Choose the zombie algorithm on the right, select **Validate**, and then **Play Test**. Validation checks that the exit and each placed zombie can be reached from the player start. The editor supports up to three zombies.
 
-> Borders are automatically locked as walls to prevent invalid edge cases.
+The outermost cells cannot be painted. The editor starts with an open grid, so add walls as needed when building a maze.
 
----
+## Project files
 
-## 🏗️ Technical Architecture
-
-### Pathfinding Implementation
-- **A\*** — Uses `g` (cost from start), `h` (heuristic), and `f = g + h` with weighted tile costs
-- **BFS** — Standard breadth-first search for shortest unweighted path
-- **Greedy** — Pure heuristic-driven search (Manhattan distance only)
-
-### Performance Optimizations
-- **Path caching** with revision tracking — zombies only recalculate routes when the map changes (doors toggle, decoy deployed, or freeze ends)
-- **Lazy recalculation** — Path updates are deferred until the zombie's next move tick
-- **Safe pocket generation** — Campaign maps guarantee small safe zones around spawn points to prevent unfair instant deaths
-
-### Audio System
-The `SoundManager` class generates waveforms at runtime using the `array` and `math` modules, producing:
-- Click, step, wall-hit, item pickup, power-up, win, and lose sounds
-- No external `.wav` or `.mp3` files required
-
----
-
-## 📝 File Structure
-
-```
-no-way-out/
-├── game_enhanced.py      # Main game file (single-file architecture)
-├── progress.json         # Auto-generated save file
-└── README.md             # This file
+```text
+No-Way-Out/
+├── game_enhanced.py       # Game, campaign, AI, editor, graphics, and audio
+├── progress.json          # Created at runtime when campaign progress advances
+├── screenshots/
+│   ├── menu.png
+│   ├── gameplay.png
+│   └── editor.png
+└── README.md
 ```
 
----
+## License
 
-## 🖼️ Screenshots
-
-*Add your own screenshots here*
-
-```markdown
-![Main Menu](screenshots/menu.png)
-![Gameplay](screenshots/gameplay.png)
-![Level Editor](screenshots/editor.png)
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Areas for improvement:
-- Additional campaign levels
-- New tile types (teleporters, traps, fog of war)
-- New zombie AI variants (Dijkstra, DFS, iterative deepening)
-- Sound effect variety
-- Mobile/touch controls
-
----
-
-## 📜 License
-
-This project is open source. Feel free to use, modify, and distribute.
-
----
-
-## 🙏 Acknowledgments
-
-Built with [Pygame](https://www.pygame.org/) — the classic Python game framework.
-
-**Escape the maze. Outsmart the algorithms. Find your way out.**
+This repository does not currently include a `LICENSE` file. No license terms are stated here.
